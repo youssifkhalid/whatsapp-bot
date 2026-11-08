@@ -1,6 +1,13 @@
 import type { Db } from './db.ts';
 import { num, str, transaction } from './db.ts';
-import type { EventStore, GlobalConfig, GroupConfig, ModerationEvent } from '../core/types.ts';
+import type { EventStore, GlobalConfig, GroupConfig, LinkRules, ModerationEvent, ProfanityRules } from '../core/types.ts';
+
+export interface GroupPatch {
+  enabled?: boolean;
+  notifyGroup?: boolean;
+  links?: Partial<LinkRules>;
+  profanity?: Partial<ProfanityRules>;
+}
 
 const json = <T>(v: unknown, fallback: T): T => {
   try {
@@ -154,7 +161,7 @@ export class GroupRepo {
     return this.db.prepare('SELECT * FROM groups ORDER BY name, group_id').all().map((r) => this.toConfig(r));
   }
 
-  update(groupId: string, patch: Partial<Omit<GroupConfig, 'groupId' | 'excludedMembers'>>): boolean {
+  update(groupId: string, patch: GroupPatch): boolean {
     const cur = this.get(groupId);
     if (!cur) return false;
     const next = {

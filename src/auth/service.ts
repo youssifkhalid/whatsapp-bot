@@ -19,7 +19,7 @@ export interface Session {
 }
 
 export class AuthError extends Error {
-  constructor(public readonly code: 'invalid_credentials' | 'locked' | 'weak_password' | 'exists' | 'invalid_username', message: string) {
+  constructor(public readonly code: 'invalid_credentials' | 'locked' | 'weak_password' | 'exists' | 'invalid_username' | 'last_admin', message: string) {
     super(message);
   }
 }
@@ -62,6 +62,26 @@ export class AuthService {
       if (err instanceof Error && /UNIQUE/i.test(err.message)) throw new AuthError('exists', 'username already exists');
       throw err;
     }
+  }
+
+  listUsers(): (AuthUser & { createdAt: number })[] {
+    return this.db.prepare('SELECT id, username, role, created_at FROM users ORDER BY id').all().map((r) => ({
+      id: num(r['id']), username: str(r['username']), role: str(r['role']) as Role, createdAt: num(r['created_at']),
+    }));
+  }
+
+  /** Deletes a user and their sessions. Refuses to delete the last administrator. */
+  deleteUser(id: number): boolean {
+    return transaction(this.db, () => {
+      const row = this.db.prepare('SELECT role FROM users WHERE id = ?').get(id);
+      if (!row) return false;
+      if (str(row['role']) === 'admin') {
+        const admins = num(this.db.prepare("SELECT COUNT(*) AS n FROM users WHERE role = 'admin'").get()?.['n']);
+        if (admins <= 1) throw new AuthError('last_admin', 'cannot delete the last administrator');
+      }
+      this.db.prepare('DELETE FROM users WHERE id = ?').run(id);
+      return true;
+    });
   }
 
   userCount(): number {
