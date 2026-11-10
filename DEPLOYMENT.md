@@ -25,3 +25,6 @@
 ## Persistence
 One named volume `guardian-data` holds the database, backups and the WhatsApp session (`/data/wa-session`), so the
 session survives restarts and re-deploys. Deleting the volume forces a QR re-pair.
+
+## Windows quick start (UNVERIFIED)
+Double-click `start-windows.bat`. It checks Node and Chrome, installs dependencies, builds the dashboard, creates the admin, and starts the API and worker with test mode on.
