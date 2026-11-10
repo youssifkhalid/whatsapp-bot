@@ -1,0 +1,114 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Tokens. Amber and red are reserved for safety states (test mode / live / destructive); teal is the only brand colour. */
+:root {
+  --canvas: #eef1f0;
+  --surface: #f8faf9;
+  --sunken: #e4e9e7;
+  --line: #d3dbd8;
+  --line-strong: #b9c5c1;
+  --ink: #0e1b26;
+  --muted: #566772;
+  --primary: #1c7c70;
+  --primary-ink: #ffffff;
+  --primary-soft: #d7ebe7;
+  --caution: #e0a21b;
+  --caution-ink: #2b2005;
+  --caution-soft: #fbf0d2;
+  --caution-text: #82550a;
+  --danger: #c4432b;
+  --danger-ink: #ffffff;
+  --danger-text: #a8321c;
+  --danger-soft: #f8e1db;
+  --ok: #2f7d3b;
+  --ok-soft: #dcefdf;
+  --stripe-dark: #1a1405;
+}
+.dark {
+  --canvas: #0a131b;
+  --surface: #101d27;
+  --sunken: #0d1821;
+  --line: #213340;
+  --line-strong: #31485a;
+  --ink: #e5eef0;
+  --muted: #8ea2ad;
+  --primary: #43b9a6;
+  --primary-ink: #04211d;
+  --primary-soft: #12342f;
+  --caution: #f0b429;
+  --caution-ink: #2b2005;
+  --caution-soft: #3a2e10;
+  --caution-text: #f0b429;
+  --danger: #f0765d;
+  --danger-ink: #2a0d07;
+  --danger-text: #f59a86;
+  --danger-soft: #3b1c15;
+  --ok: #62c27f;
+  --ok-soft: #13301d;
+  --stripe-dark: #14100a;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-ink: var(--primary-ink);
+  --color-primary-soft: var(--primary-soft);
+  --color-caution: var(--caution);
+  --color-caution-ink: var(--caution-ink);
+  --color-caution-soft: var(--caution-soft);
+  --color-caution-text: var(--caution-text);
+  --color-danger: var(--danger);
+  --color-danger-ink: var(--danger-ink);
+  --color-danger-text: var(--danger-text);
+  --color-danger-soft: var(--danger-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --font-sans: ui-sans-serif, system-ui, "Segoe UI", "Noto Sans", "Noto Sans Arabic", "Noto Naskh Arabic", Tahoma, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+}
+
+@layer base {
+  html { color-scheme: light; -webkit-text-size-adjust: 100%; }
+  html.dark { color-scheme: dark; }
+  body { @apply bg-canvas text-ink font-sans antialiased; font-size: 15px; line-height: 1.55; min-height: 100dvh; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+  ::selection { background: var(--primary); color: var(--primary-ink); }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+  table { border-collapse: collapse; }
+  /* Arabic needs a little more line-height and no letter-spacing tweaks. */
+  html[lang="ar"] body { line-height: 1.75; }
+}
+
+@layer components {
+  /* The one memorable element: a caution-tape band that states whether the system is simulating or acting. */
+  .tape {
+    background-image: repeating-linear-gradient(-45deg, var(--caution) 0 12px, var(--stripe-dark) 12px 24px);
+  }
+  .live-band { background: var(--danger); }
+  .figure { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .tnum { font-variant-numeric: tabular-nums; }
+}
+
+@keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent); } 100% { box-shadow: 0 0 0 8px transparent; } }
+.pulse { animation: pulse-ring 1.8s ease-out infinite; }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(6px) scale(0.99); } to { opacity: 1; transform: none; } }
+.dialog-in { animation: dialog-in 140ms ease-out; }
+@keyframes drawer-in-start { from { transform: translateX(calc(-1 * var(--dir, 1) * 100%)); } to { transform: none; } }
+.drawer-in { animation: drawer-in-start 160ms ease-out; }
+@keyframes shimmer { 0% { opacity: 0.55; } 50% { opacity: 1; } 100% { opacity: 0.55; } }
+.skeleton { animation: shimmer 1.4s ease-in-out infinite; background: var(--sunken); border-radius: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
