@@ -3,10 +3,33 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22.5" },
+  "engines": { "node": ">=22.13" },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json",
     "test": "tsx --test tests/*.test.ts",
-    "test:coverage": "tsx --test --experimental-test-coverage tests/*.test.ts"
+    "test:coverage": "tsx --test --experimental-test-coverage tests/*.test.ts",
+    "build:web": "node scripts/build-web.mjs",
+    "start:api": "tsx src/api/main.ts",
+    "start:worker": "tsx src/worker/main.ts",
+    "create-admin": "tsx scripts/create-admin.ts"
+  },
+  "dependencies": {
+    "tsx": "^4.20.0",
+    "whatsapp-web.js": "^1.34.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "esbuild": "^0.28.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
   }
 }

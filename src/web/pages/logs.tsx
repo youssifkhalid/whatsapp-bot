@@ -88,7 +88,7 @@ export function Logs({ params }: { params: Record<string, string> }) {
           </>
         ) : null}
       </Panel>
-      <p className="mt-3 text-sm text-muted">{t('logs.exportNote', { n: number(500) })}</p>
+      <p className="mt-3 text-sm text-muted">{t('logs.exportNote', { n: number(10_000) })}</p>
       <EventDetail event={selected} names={names} onClose={() => setSelected(null)} />
     </>
   );

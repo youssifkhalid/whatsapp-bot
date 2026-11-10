@@ -1,0 +1,11 @@
+node_modules
+dist
+data
+.git
+.env
+*.db
+*.db-wal
+*.db-shm
+wa-session
+.wwebjs_auth
+.wwebjs_cache
