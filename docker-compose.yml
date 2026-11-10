@@ -1,0 +1,30 @@
+# UNVERIFIED: not run in the authoring sandbox. API and worker are separate containers sharing one data volume.
+services:
+  api:
+    build: { context: ., target: api }
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      TRUST_PROXY: "true"
+    volumes: [guardian-data:/data]
+    expose: ["8080"]
+
+  worker:
+    build: { context: ., target: worker }
+    restart: unless-stopped
+    env_file: .env
+    volumes: [guardian-data:/data]
+    shm_size: "512mb"
+    # Worker health is internal only: /healthz (liveness), /readyz (connected to WhatsApp).
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on: [api]
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./deploy/certs:/etc/nginx/certs:ro
+
+volumes:
+  guardian-data:

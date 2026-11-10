@@ -50,3 +50,12 @@ Events store the matched host or list term only, never the message text.
 There is no official WhatsApp API for moderating ordinary groups. Libraries such as whatsapp-web.js automate
 WhatsApp Web, are unofficial, can break on WhatsApp updates, and automated accounts can be banned. The adapter
 is isolated behind `WhatsAppPort` so it can be replaced. Use a dedicated number, and keep test mode on until verified.
+
+## API and dashboard (added)
+
+- `src/api/app.ts` is a framework-independent `handle(ApiRequest) -> ApiResponse`. `server.ts` adapts it to `node:http`
+  (the tested path used by `main.ts`); `express.ts` mounts the same handler on Express (UNVERIFIED, excluded from tsc).
+  Express is therefore optional: the security logic lives in the shared handler, not in middleware.
+- The dashboard (`src/web`) is a React SPA served by the API from `dist/web`. It talks only to `/api`.
+- The API and worker communicate only through SQLite (`worker_status`, `connection_events`, `events`, `settings`).
+  Settings changes bump a version the worker re-reads.
